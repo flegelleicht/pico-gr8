@@ -10,7 +10,17 @@ function _init()
     y = 64,
     c = 7,
     s = 3,
+    spr = 2,
+    timer = 1,
     update = function(self) 
+      self.timer = self.timer + 1
+      if self.timer >= 3 then
+        self.timer = 0
+        self.spr = self.spr + 1
+        if self.spr > 5 then
+          self.spr = 2
+        end
+      end
     	if btn(➡️) then
     		self.x += self.s
         if self.x >= 127 then
@@ -38,8 +48,10 @@ function _init()
       if btnp(❎) then
       end
     end,
+
     draw = function(self)
-      pset(self.x, self.y, self.c)
+      spr(self.spr, self.x, self.y)
+      -- pset(self.x, self.y, self.c)
     end,
   }
   
