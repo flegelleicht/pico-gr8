@@ -5,35 +5,107 @@ __lua__
 local state = {}
 
 function _init()
+  state.go = false;
   state.c = 7
   state.s = {}
+  state.t = 64
+  state.l = 64
+  for x = 0, 127, 1 do
+    state.s[x] = {}
+    for y = 0, 127, 1 do
+      state.s[x][y] = 13
+    end
+  end
+  state.r = {}
+  for x = 0, 127, 1 do
+    state.r[x] = {}
+    for y = 0, 127, 1 do
+      state.r[x][y] = 14
+    end
+  end
 end
 
 function get()
-  for y = 0, 127, 1 do
-    state.s[y] = {}
-    for x = 0, 127, 1 do
-      state.s[y][x] = pget(x, y)
+  for x = 0, 127, 1 do
+    state.s[x] = {}
+    for y = 0, 127, 1 do
+      state.s[x][y] = pget(x, y)
     end
   end
 end
 
 function set()
-  for y = 0, 127, 1 do
-    state.s[y] = {}
-    for x = 0, 127, 1 do
-      pset(x, y, state.s[y][x])
+  for x = 0, 127, 1 do
+    for y = 0, 127, 1 do
+      pset(x, y, state.r[x][y])
     end
   end  
 end
 
+function rot(a, s)
+  for x = 0, 127, 1 do
+    for y = 0, 127, 1 do
+      local u = flr( cos(-a) * (x - state.l) + sin(-a) * (y - state.t) + 0.5) + state.l;
+      local v = flr(-sin(-a) * (x - state.l) + cos(-a) * (y - state.t) + 0.5) + state.l;
+      -- printh("x:" .. x .."->u:" .. u .. ", y:" .. y.."->v:" .. v)
+      if (0 <= u) and (u < 128) and (0 <= v) and (v < 128) then
+        state.r[x][y] = state.s[u][v];
+      else
+        state.r[x][y] = 0;
+      end
+    end
+  end
+end
+
+function trl(dx, dy)
+  local x, y
+  for x = 0, 127, 1 do
+    for y = 0, 127, 1 do
+      local u = x + dx;
+      local v = y + dy;
+      if (0 <= u) and (u < 128) and (0 <= v) and (v < 128) then
+        -- printh("IN u: " .. u .. ", v: " .. v)
+        state.r[x][y] = state.s[u][v];
+      else
+        -- printh("OU u: " .. u .. ", v: " .. v)
+        state.r[x][y] = 0;
+      end
+    end
+  end
+end
+
 function _update()
-  state.c = flr(rnd(16))
-  get()
+  state.c = flr(rnd(8))
+  if(state.go) then
+    printh("get")
+    get();
+    printh("rot")
+    rot(0.02, 1.0)
+  end
+  
+  if btnp(⬆️) then
+    printh("btnp")
+    get();
+    rot(0.01, 1.0);
+    state.go = true;
+  end
+  if btnp(➡️) then
+    state.l += 1
+  end
+  if btnp(⬅️) then
+    state.l -= 1
+  end
 end
 
 function _draw()
-  cls()
-  pal(0, state.c)
-  set()
+  cls(flr(rnd(16)));
+  if(state.go) then
+    printh("_set")
+    set();
+  end
+  
+  rect(10,10, 20,20, 8);
+  rectfill(11,11, 19,19, 7);
+  
+
 end
