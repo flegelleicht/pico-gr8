@@ -10,6 +10,8 @@ function _init()
   state.s = {}
   state.t = 64
   state.l = 64
+  state.rx = 10
+  state.ry = 10
   for x = 0, 127, 1 do
     state.s[x] = {}
     for y = 0, 127, 1 do
@@ -74,6 +76,9 @@ function trl(dx, dy)
   end
 end
 
+
+-- ⬅️➡️⬆️⬇️❎🅾️
+
 function _update()
   state.c = flr(rnd(8))
   if(state.go) then
@@ -89,12 +94,21 @@ function _update()
     rot(0.01, 1.0);
     state.go = true;
   end
-  if btnp(➡️) then
-    state.l += 5
+  if btn(⬆️) then
+    state.ry -= 5
   end
-  if btnp(⬅️) then
-    state.l -= 5
+  if btn(⬇️) then
+    state.ry += 5
   end
+  
+  if btn(➡️) then
+    state.l += 2
+  end
+  if btn(⬅️) then
+    state.l -= 2
+  end
+  
+  
 end
 
 function _draw()
@@ -104,8 +118,8 @@ function _draw()
     set();
   end
   
-  rect(10,10, 20,20, 8);
-  rectfill(11,11, 19,19, 7);
+  rect(state.rx,state.ry, state.rx+10, state.ry + 10, 8);
+  rectfill(state.rx+1,state.ry+1, state.rx+10-1, state.ry+10-1, 7);
   
 
 end
