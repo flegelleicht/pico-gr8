@@ -90,10 +90,10 @@ function _update()
     state.go = true;
   end
   if btnp(➡️) then
-    state.l += 1
+    state.l += 5
   end
   if btnp(⬅️) then
-    state.l -= 1
+    state.l -= 5
   end
 end
 
