@@ -82,9 +82,7 @@ end
 function _update()
   state.c = flr(rnd(8))
   if(state.go) then
-    printh("get")
     get();
-    printh("rot")
     rot(0.02, 1.0)
   end
   
@@ -114,7 +112,6 @@ end
 function _draw()
   cls(flr(rnd(16)));
   if(state.go) then
-    printh("_set")
     set();
   end
   
