@@ -7,11 +7,13 @@ local player
 function _init()
   player = {
     x = 64,
-    y = 64,
+    y = 52,
     c = 7,
-    s = 3,
+    s = 2,
+    w = 24,
     spr = 2,
     timer = 1,
+    dir = "r",
     update = function(self) 
       self.timer = self.timer + 1
       if self.timer >= 3 then
@@ -22,35 +24,32 @@ function _init()
         end
       end
     	if btn(➡️) then
-    		self.x += self.s
-        if self.x >= 127 then
-          self.x = 127
-        end
+        self.dir = "r"
     	end
     	if btn(⬅️) then
-    		self.x -= self.s
-        if self.x <= 0 then
-          self.x = 0
-        end
+        self.dir = "l"
     	end
-    	if btn(⬆️) then
-    		self.y -= self.s
-        if self.y <= 0 then
-          self.y = 0
-        end
-    	end
-      if btn(⬇️) then
-        self.y += self.s
-        if self.y >= 127 then
-          self.y = 127 
-        end
-      end
       if btnp(❎) then
+        
+      end
+      
+      if self.dir == "r" then
+        self.x += self.s
+        self.x = min(self.x, 127-self.w)
+      else
+        self.x -= self.s
+        self.x = max(self.x, 0)
       end
     end,
 
     draw = function(self)
-      spr(self.spr, self.x, self.y)
+      print(self.dir .. " ".. self.x, 10, 10)
+      local flip = false
+      if self.dir == "l" then
+        flip = true
+      end
+      -- spr(self.spr, self.x, self.y, 1.0,1.0, flip)
+      sspr(self.spr*8,0, 8,8, self.x,self.y, self.w,self.w, flip)
       -- pset(self.x, self.y, self.c)
     end,
   }
@@ -63,6 +62,11 @@ end
 
 function _draw()
   cls()
+  rectfill(10,32, 117,64, 12)
+  line(10,66, 117,66, 15)
+  line(8,71, 119,71, 15)
+  line(6,80, 121,80, 15)
+  -- line(4,95, 123,95, 15)
   player:draw()
 end
 __gfx__
